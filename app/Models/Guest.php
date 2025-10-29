@@ -24,6 +24,5 @@ class Guest extends Model
         'IPDS',
         'SOSIAL',
         'TEKNIS',
-        'LAINNYA',
     ];
 }

@@ -9,6 +9,8 @@ use App\Models\Guest;
 use App\Models\AdminPst; // Pastikan nama model sesuai: AdminPst
 use App\Models\Infographic; 
 use App\Models\RunningText; // PENTING: Import model RunningText
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\GuestsExport;
 
 class AdminController extends Controller
 {
@@ -250,6 +252,8 @@ class AdminController extends Controller
      */
     public function infographicsUpdate(Request $request, Infographic $infographic)
     {
+
+        
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|in:' . implode(',', Infographic::$typeOptions),
@@ -361,5 +365,14 @@ class AdminController extends Controller
         $runningText->delete();
 
         return redirect()->route('admin.running_texts.index')->with('success', 'Data Running Text berhasil dihapus.');
+    }
+
+    public function guestsExport(Request $request)
+    {
+        // Menentukan nama file berdasarkan tanggal dan waktu export
+        $filename = 'data_tamu_versi_' . now()->format('Ymd') . '.xlsx';
+
+        // Memicu download dengan passing Request object ke GuestsExport
+        return Excel::download(new GuestsExport($request), $filename);
     }
 }

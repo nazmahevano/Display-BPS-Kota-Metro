@@ -38,7 +38,7 @@
 
 
         {{-- Ekspor dan Hapus (Simulasi tombol) --}}
-        <button class="btn btn-light" style="margin-left: 10px;">
+        <button class="btn btn-light" style="margin-left: 10px;" onclick="redirectToExport()">
             <i class="fas fa-file-export"></i> Export
         </button>
 
@@ -75,7 +75,7 @@
                         <td>{{ $guest->phone }}</td>
                         <td>{{ $guest->purpose }}</td>
                         <td>{{ $guest->objective }}</td>
-                        <td>{{ \Carbon\Carbon::parse($guest->created_at)->format('d/m/Y H:i') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($guest->created_at)->format('d/m/Y') }}</td>
                         <td>
                             <button class="btn btn-warning" style="padding: 5px 10px;" onclick="showModal('editDataModal{{ $guest->id }}')">
                                 <i class="fas fa-pencil-alt"></i>
@@ -108,3 +108,24 @@
 @include('admin.guests.create-modal', ['purposes' => $purposes])
 
 @endsection
+
+@section('scripts')
+<script>
+function redirectToExport() {
+    const purpose = document.getElementById('purpose-filter')?.value;
+    const startDate = document.getElementById('start-date-filter')?.value;
+    const endDate = document.getElementById('end-date-filter')?.value;
+    const search = document.getElementById('search-filter')?.value;
+
+    const url = new URL("{{ route('admin.guests.export') }}");
+     
+    // Tambahkan parameter hanya jika ada isinya
+    if (purpose && purpose !== 'Semua Keperluan') url.searchParams.set('purpose', purpose);
+    if (startDate) url.searchParams.set('start_date', startDate);
+    if (endDate) url.searchParams.set('end_date', endDate);
+    if (search) url.searchParams.set('search', search);
+
+    window.location.href = url.toString();
+} // <-- Tanda kurung kurawal penutup fungsi HARUS ADA di sini
+
+</script> @endsection

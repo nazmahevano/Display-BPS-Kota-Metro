@@ -19,6 +19,7 @@ Route::prefix('dashboard')->name('admin.')->group(function () {
     Route::post('/guests', [AdminController::class, 'guestsStore'])->name('guests.store');
     Route::put('/guests/{guest}', [AdminController::class, 'guestsUpdate'])->name('guests.update');
     Route::delete('/guests/{guest}', [AdminController::class, 'guestsDestroy'])->name('guests.destroy');
+    Route::get('/guests/export', [AdminController::class, 'guestsExport'])->name('guests.export');
     
     // --- Manajemen Petugas PST ---
     Route::get('/admin-pst', [AdminController::class, 'adminPstIndex'])->name('admin_pst.index');
