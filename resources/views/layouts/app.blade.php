@@ -11,7 +11,7 @@
     @yield('styles')
 </head>
 <body>
-
+    <div class="dynamic-background"></div>
     <header class="header">
         <div class="logo-title">
             <img src="{{ asset('images/logo_bps.png') }}" alt="Logo BPS" class="logo">

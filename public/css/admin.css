@@ -1,0 +1,593 @@
+/* public/css/admin.css */
+
+/* ==================================== */
+/* Dashboard Layout & Reset */
+/* ==================================== */
+:root {
+    --bps-blue: #0b509d;
+    --bps-orange: #f26522;
+    --primary: var(--bps-blue);
+    --sidebar-width: 250px;
+    --sidebar-collapsed-width: 60px;
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --text-dark: #343a40;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --success-bg: #d4edda;
+    --success-text: #155724;
+    --danger-bg: #f8d7da;
+    --danger-text: #721c24;
+    --warning-bg: #fff3cd;
+    --warning-text: #856404;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* ==================================== */
+/* Sidebar (Menu Kiri) */
+/* ==================================== */
+.sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    background-color: #212529;
+    color: var(--bg-white);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    transition: width 0.3s cubic-bezier(0.2, 0, 0, 1), padding 0.3s;
+}
+
+.sidebar-header {
+    display: flex; /* Gunakan flexbox untuk mensejajarkan Judul dan Tombol */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px; /* Padding yang lebih seimbang */
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--bps-orange);
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Garis pemisah yang lebih halus */
+    margin-bottom: 10px;
+    position: sticky; /* Sticky agar selalu terlihat saat scroll */
+    top: 0;
+    background-color: #212529; /* Samakan dengan sidebar background */
+    z-index: 10;
+}
+
+.sidebar-title {
+    font-size: 1em;
+    font-weight: 700; /* Tebalkan sedikit */
+    color: var(--bps-orange);
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 1;
+}
+
+/* Tombol Toggle */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: var(--bps-orange); /* Gunakan warna BPS Orange agar kontras */
+    cursor: pointer;
+    font-size: 1.5em; /* Ukuran yang lebih besar */
+    padding: 5px;
+    margin: -5px; /* Sesuaikan margin agar tombol terlihat terpusat */
+    line-height: 1;
+    transition: transform 0.3s, color 0.2s;
+    border-radius: 4px; /* Sedikit lengkungan */
+}
+.toggle-btn:hover {
+    color: var(--bg-white); /* Beri efek hover */
+}
+
+.menu-item {
+    display: flex; /* Gunakan flex untuk perataan icon/text */
+    align-items: center;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s;
+    font-size: 0.95em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.menu-item i {
+    margin-right: 10px;
+    transition: margin 0.3s;
+}
+
+.menu-text {
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.menu-group-title {
+    color: var(--text-muted);
+    font-size: 0.75em;
+    padding: 10px 20px 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+/* ==================================== */
+/* Collapsed State (SAAT WRAPPER PUNYA CLASS 'collapsed') */
+/* ==================================== */
+
+.wrapper.collapsed .sidebar {
+    width: var(--sidebar-collapsed-width);
+}
+
+.wrapper.collapsed .sidebar-title,
+.wrapper.collapsed .menu-group-title .menu-text {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+}
+
+.wrapper.collapsed .menu-item {
+    justify-content: right; /* Pusatkan icon */
+    padding: 10px 20px; /* Kurangi padding horizontal */
+}
+
+.wrapper.collapsed .menu-item i {
+    margin-right: 10px; /* Hilangkan margin icon */
+}
+
+.wrapper.collapsed .menu-item .menu-text {
+    display: none; /* Sembunyikan teks menu sepenuhnya */
+}
+
+.wrapper.collapsed .toggle-btn {
+    /* Putar tombol bar */
+    transform: rotate(90deg);
+}
+
+/* Gaya untuk Konten Utama */
+.content {
+    flex-grow: 1;
+    padding: 50px;
+    transition: margin-left 0.3s; /* Tambahkan transisi jika konten berada di posisi absolut */
+}
+
+.menu-item {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.menu-item i {
+    margin-right: 10px;
+}
+
+.menu-item:hover, .menu-item.active {
+    color: var(--bg-white);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-group-title {
+    color: var(--text-muted);
+    font-size: 0.8em;
+    padding: 10px 20px 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.submenu-list {
+    list-style: none;
+    padding: 0;
+}
+
+.submenu-item a {
+    padding-left: 40px;
+    font-size: 0.9em;
+}
+
+/* ==================================== */
+/* Content Area */
+/* ==================================== */
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.content-header h1 {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.breadcrumb {
+    font-size: 0.8em;
+    color: var(--text-muted);
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: var(--primary);
+}
+/* ==================================== */
+/* Card Styling */
+/* ==================================== */
+.card {
+    background-color: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    padding: 20px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* ==================================== */
+/* Table Styling */
+/* ==================================== */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.table th, .table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid var(--border-color);
+    text-align: left;
+    font-size: 0.9em;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid var(--border-color);
+    font-weight: bold;
+}
+
+.table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* ==================================== */
+/* Form & Filter - OPTIMALISASI AKHIR */
+/* ==================================== */
+.form-row {
+    display: flex;
+    gap: 10px; /* Jarak seragam 10px antar item */
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+/* Pastikan semua elemen di form-row tidak mengerut/memanjang kecuali yang diizinkan */
+.form-row > * {
+    flex-shrink: 1;
+    flex-grow: 0;
+}
+
+/* 1. Kunci: Targetkan Dropdown Keperluan (Hanya sepanjang kontennya) */
+.form-row select#purpose-filter {
+    /* Gunakan max-content untuk membuat lebar sependek teks */
+    width: max-content; 
+    min-width: 150px; /* Batasan minimum agar tetap terlihat bagus */
+}
+
+/* 2. Kunci: Targetkan Input Tanggal (Buat lebih ringkas) */
+.form-row input[type="date"] {
+    width: 140px; /* <<< UBAH INI: Tambah lebar sedikit (dari 120px) */
+    max-width: 130px; /* <<< UBAH INI */
+    min-width: 100px; 
+}
+
+/* 3. Kunci: Search Group (Lebih Panjang dari yang lain, mengambil sisa ruang) */
+.search-group {
+    margin-top: 10px;
+    width: 100%;
+    flex-basis: 100%;
+    display: flex;
+    flex-grow: 1;
+    max-width: 500px;
+    min-width: 200px;
+    flex-shrink: 1;
+}
+
+.form-row .btn:last-of-type:not { 
+    margin-left: 100px; /* <<< KUNCI: Dorong ke kanan dan ambil ruang kosong */
+    order: 10; /* Berikan order tinggi agar selalu di ujung kanan baris pertamanya */
+}
+
+.date-separator {
+    /* Pastikan pemisah sejajar dengan input */
+    line-height: 1.5; 
+    font-size: 0.9em;
+    color: var(--text-dark);
+    margin: 0 5px; /* Sedikit jarak di kiri dan kanan */
+    flex-shrink: 0; /* Jangan biarkan teks menyusut */
+}
+
+/* 4. Modifikasi Input Pencarian (Menempel) */
+.search-group .form-control {
+    flex-grow: 1;
+    border-top-right-radius: 0; 
+    border-bottom-right-radius: 0;
+}
+
+/* 5. Modifikasi Tombol Pencarian (Menempel) */
+.search-group .btn {
+    border-top-left-radius: 0; 
+    border-bottom-left-radius: 0;
+    margin-left: -1px; 
+    height: 38px;
+    padding: 0.375rem 0.75rem; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Aturan form-control standar lainnya */
+.form-control {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: var(--text-dark);
+    background-color: var(--bg-white);
+    background-clip: padding-box;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Hapus aturan flex yang berlebihan dari form-group/input-group */
+.form-group, .input-group {
+    flex: 0 1 auto; 
+}
+
+/* ==================================== */
+/* Buttons */
+/* ==================================== */
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    color: var(--bg-white);
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9em;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    text-decoration: none;
+}
+
+.btn-primary {
+    color: var(--bg-white);
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: #003d7c; /* Darker blue */
+    border-color: #003d7c;
+}
+
+.btn-success {
+    color: var(--bg-white);
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #1e7e34;
+    border-color: #1c7430;
+}
+
+.btn-info {
+    color: var(--bg-white);
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.btn-info:hover {
+    background-color: #117a8b;
+    border-color: #10707f;
+}
+
+.btn-danger {
+    color: var(--bg-white);
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-warning {
+    color: var(--text-dark);
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-light {
+    color: var(--text-dark);
+    background-color: var(--bg-light);
+    border-color: var(--border-color);
+}
+
+/* ==================================== */
+/* Alert / Flash Message */
+/* ==================================== */
+.alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.alert-success {
+    color: var(--success-text);
+    background-color: var(--success-bg);
+    border-color: #c3e6cb;
+}
+
+.alert-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: inherit;
+    line-height: 1;
+    margin-left: 15px;
+}
+
+/* ==================================== */
+/* Modal Styling (Sederhana) */
+/* ==================================== */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    display: none;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+    z-index: 1050;
+    display: none; /* Default tersembunyi */
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-dialog {
+    margin: 1.75rem auto;
+    position: relative;
+    max-width: 500px;
+    pointer-events: none;
+}
+
+.modal-dialog-centered {
+    min-height: calc(100vh - 3.5rem);
+    display: flex;
+    align-items: center;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: var(--bg-white);
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    border-top-left-radius: 0.3rem;
+    border-top-right-radius: 0.3rem;
+}
+
+.modal-title {
+    margin-bottom: 0;
+    line-height: 1.5;
+    font-size: 1.25rem;
+}
+
+.modal .close-btn {
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    background: transparent;
+    border: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    opacity: 0.5;
+    gap: 5px;;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+}
+
+.modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+/* Style untuk form di dalam modal */
+.modal-body .form-group {
+    margin-bottom: 15px;
+}
+
+.modal-body .form-control {
+    width: 100%;
+}
