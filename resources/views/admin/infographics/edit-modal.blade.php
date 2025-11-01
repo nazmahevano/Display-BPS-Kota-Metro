@@ -15,40 +15,41 @@
                     </div>
                     <div class="form-group">
                         <label for="edit-type-{{ $item->id }}">Tipe Konten</label>
-                        <select name="type" id="edit-type-{{ $item->id }}" class="form-control" onchange="toggleContentInput('edit-{{ $item->id }}')" required>
+                        <select name="type" id="edit-type-{{ $item->id }}" class="form-control" required onchange="toggleInfographicFields(this.value, 'edit-infographics-{{ $item->id }}')">
                             @foreach ($typeOptions as $type)
                                 <option value="{{ $type }}" @if($item->type == $type) selected @endif>{{ $type }}</option>
                             @endforeach
                         </select>
                     </div>
                     
-                    {{-- Konten Foto --}}
-                    <div class="form-group content-input-edit edit-photo-upload-{{ $item->id }}" @if(!$item->isPhoto()) style="display: none;" @endif>
-                        <label for="edit-photo-{{ $item->id }}">Ganti Foto (Maks 2MB)</label>
-                        @if($item->isPhoto() && $item->content_url)
-                            <small style="color: #6c757d; font-size: 0.8em; margin-bottom: 5px;">File saat ini: <a href="{{ asset('storage/' . $item->content_url) }}" target="_blank">Lihat</a></small>
+                    {{-- Tampilan Konten Saat Ini (Foto/Video URL) --}}
+                    <div class="form-group">
+                        <label>Konten Saat Ini</label>
+                        @if($item->content_url)
+                            @if($item->isPhoto())
+                                <img src="{{ asset('storage/' . $item->content_url) }}" alt="Foto Infografis" style="max-width: 100%; max-height: 200px; object-fit: contain; margin-bottom: 10px; border-radius: 5px;">
+                            @else
+                                <a href="{{ $item->content_url }}" target="_blank">Lihat Video Embed</a>
+                            @endif
+                        @else
+                            <span>Belum ada konten.</span>
                         @endif
-                        <input type="file" name="photo" id="edit-photo-{{ $item->id }}" class="form-control" accept="image/*">
                     </div>
 
-                    {{-- Konten Video --}}
-                    <div class="form-group content-input-edit edit-video-url-{{ $item->id }}" @if($item->isPhoto()) style="display: none;" @endif>
-                        <label for="edit-video_url-{{ $item->id }}">Video (URL Embed)</label>
-                        <input type="url" name="video_url" id="edit-video_url-{{ $item->id }}" class="form-control" value="{{ $item->content_url }}" placeholder="Contoh: https://www.youtube.com/watch?v=...">
+                    {{-- File Upload (for Foto) --}}
+                    <div class="form-group" id="edit-infographics-{{ $item->id }}-photo-group" style="{{ $item->isPhoto() ? 'display:block;' : 'display:none;' }}">
+                        <label for="edit-photo-{{ $item->id }}">Ganti Foto (Maks 2MB, biarkan kosong jika tidak diganti)</label>
+                        <input type="file" name="photo" id="edit-photo-{{ $item->id }}" class="form-control" accept="image/*">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="edit-status-{{ $item->id }}">Status</label>
-                        <select name="status" id="edit-status-{{ $item->id }}" class="form-control" required>
-                            @foreach ($statusOptions as $status)
-                                <option value="{{ $status }}" @if($item->status == $status) selected @endif>{{ $status }}</option>
-                            @endforeach
-                        </select>
+                    {{-- URL Input (for Video) --}}
+                    <div class="form-group" id="edit-infographics-{{ $item->id }}-video-group" style="{{ !$item->isPhoto() ? 'display:block;' : 'display:none;' }}">
+                        <label for="edit-video_url-{{ $item->id }}">URL Video Embed</label>
+                        <input type="url" name="video_url" id="edit-video_url-{{ $item->id }}" class="form-control" value="{{ $item->type === 'Video (URL Embed)' ? $item->content_url : '' }}">
                     </div>
-                    <div class="form-group">
-                        <label for="edit-urutan-{{ $item->id }}">Urutan Tampil (Angka)</label>
-                        <input type="number" name="urutan" id="edit-urutan-{{ $item->id }}" class="form-control" value="{{ $item->urutan }}" min="0" required>
-                    </div>
+
+                    {{-- Status dan Urutan Dihilangkan --}}
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" onclick="hideModal('editInfografisModal{{ $item->id }}')">Tutup</button>
@@ -58,3 +59,27 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Pastikan fungsi toggleInfographicFields didefinisikan di suatu tempat (atau di index.blade.php)
+    // Jika belum ada, tambahkan fungsi ini:
+    if (typeof toggleInfographicFields !== 'function') {
+        function toggleInfographicFields(typeValue, prefix) {
+            var photoGroup = document.getElementById(prefix + '-photo-group');
+            var videoGroup = document.getElementById(prefix + '-video-group');
+            
+            if (photoGroup && videoGroup) {
+                if (typeValue === 'Foto (Upload)') {
+                    photoGroup.style.display = 'block';
+                    videoGroup.style.display = 'none';
+                } else if (typeValue === 'Video (URL Embed)') {
+                    photoGroup.style.display = 'none';
+                    videoGroup.style.display = 'block';
+                } else {
+                    photoGroup.style.display = 'none';
+                    videoGroup.style.display = 'none';
+                }
+            }
+        }
+    }
+</script>

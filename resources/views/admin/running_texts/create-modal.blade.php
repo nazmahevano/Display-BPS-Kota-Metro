@@ -12,18 +12,7 @@
                         <label for="content">Konten Teks</label>
                         <textarea name="content" id="content" class="form-control" rows="3" required></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select name="status" id="status" class="form-control" required>
-                            @foreach ($statusOptions as $status)
-                                <option value="{{ $status }}">{{ $status }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="urutan">Urutan Tampil (Angka)</label>
-                        <input type="number" name="urutan" id="urutan" class="form-control" value="0" min="0" required>
-                    </div>
+                    {{-- Status dan Urutan Tampil dihilangkan --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" onclick="hideModal('tambahRunningTextModal')">Tutup</button>

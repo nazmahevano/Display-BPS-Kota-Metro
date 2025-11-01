@@ -18,9 +18,8 @@
                     <th style="width: 80px;">Foto</th>
                     <th>Nama</th>
                     <th>Jabatan</th>
-                    <th>Status Jaga</th>
-                    <th style="width: 80px;">Urutan</th>
-                    <th style="width: 100px;">Aksi</th>
+                    {{-- Hapus kolom Status Jaga --}}
+                    <th style="width: 180px;">Aksi</th> {{-- Lebarkan sedikit untuk 3 tombol --}}
                 </tr>
             </thead>
             <tbody>
@@ -32,17 +31,31 @@
                         </td>
                         <td>{{ $admin->name }}</td>
                         <td>{{ $admin->jabatan }}</td>
-                        <td>
-                            <span style="font-weight: bold; color: {{ $admin->status_jaga == 'Sedang Bertugas' ? '#28a745' : '#dc3545' }}">
-                                {{ $admin->status_jaga }}
-                            </span>
-                        </td>
-                        <td>{{ $admin->urutan }}</td>
-                        <td>
-                            <button class="btn btn-warning" style="padding: 5px 10px;" onclick="showModal('editAdminModal{{ $admin->id }}')">
+                        {{-- Hapus data Status Jaga --}}
+                        <td style="display: flex; gap: 5px;">
+                            {{-- Tombol Toggle Status (Menggantikan tombol edit lama) --}}
+                            @php
+                                $isBertugas = $admin->status_jaga == 'Sedang Bertugas';
+                                $newStatus = $isBertugas ? 'Tidak Bertugas' : 'Sedang Bertugas';
+                            @endphp
+                            {{-- Perhatian: Anda perlu menambahkan route 'admin.admin_pst.toggle_status' di routes/web.php --}}
+                            <form action="{{ route('admin.admin_pst.toggle_status', $admin->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengubah status menjadi: {{ $newStatus }}?');" style="flex-grow: 1;">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn {{ $isBertugas ? 'btn-success' : 'btn-secondary' }}" 
+                                        style="padding: 5px 10px; font-size: 10px; width: 60px; {{ $isBertugas ? '' : 'color: #333; border-color: #6c757d;' }}" {{-- BARU: Menambahkan warna teks gelap dan border untuk kontras --}}
+                                        title="Status Jaga: {{ $admin->status_jaga }}">
+                                    {{ $isBertugas ? 'Aktif' : 'Nonaktif' }}
+                                </button>
+                            </form>
+                            
+                            {{-- Tombol Edit Nama/Foto (Modal) --}}
+                            <button class="btn btn-info" style="padding: 5px 10px; min-width: 40px;" onclick="showModal('editAdminModal{{ $admin->id }}')" title="Edit Data">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
-                            <button class="btn btn-danger" style="padding: 5px 10px;" onclick="confirmDelete('delete-admin-form-{{ $admin->id }}')">
+
+                            {{-- Tombol Hapus --}}
+                            <button class="btn btn-danger" style="padding: 5px 10px; min-width: 40px;" onclick="confirmDelete('delete-admin-form-{{ $admin->id }}')" title="Hapus">
                                 <i class="fas fa-trash"></i>
                             </button>
                             
@@ -57,7 +70,7 @@
                     @include('admin.admin_pst.edit-modal', ['admin' => $admin, 'statusOptions' => $statusOptions])
                 @empty
                     <tr>
-                        <td colspan="7" style="text-align: center;">Belum ada data Admin PST.</td>
+                        <td colspan="6" style="text-align: center;">Belum ada data Admin PST.</td>
                     </tr>
                 @endforelse
             </tbody>

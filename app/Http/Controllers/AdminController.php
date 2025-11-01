@@ -25,6 +25,7 @@ class AdminController extends Controller
 
     // ===============================================
     // --- MANAJEMEN BUKU TAMU (GUEST) ---
+    // (Tidak ada perubahan di bagian ini)
     // ===============================================
 
     /**
@@ -142,8 +143,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'jabatan' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:2048', 
-            'status_jaga' => 'required|in:' . implode(',', AdminPst::$statusOptions),
-            'urutan' => 'required|integer|min:0',
+            // status_jaga dan urutan dihilangkan dari form
         ]);
 
         $validated['photo_path'] = null;
@@ -152,13 +152,17 @@ class AdminController extends Controller
             $validated['photo_path'] = $request->file('photo')->store('admin_photos', 'public');
         }
 
+        // Tambahkan nilai default untuk status dan urutan
+        $validated['status_jaga'] = 'Tidak Bertugas'; // Default status
+        $validated['urutan'] = AdminPst::max('urutan') + 1; // Auto-increment urutan
+
         AdminPst::create($validated);
 
         return redirect()->route('admin.admin_pst.index')->with('success', 'Data Admin PST berhasil ditambahkan.');
     }
 
     /**
-     * Memperbarui data Admin PST.
+     * Memperbarui data Admin PST (hanya nama, jabatan, dan foto).
      */
     public function adminPstUpdate(Request $request, AdminPst $adminPst)
     {
@@ -166,20 +170,36 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'jabatan' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:2048', 
-            'status_jaga' => 'required|in:' . implode(',', AdminPst::$statusOptions),
-            'urutan' => 'required|integer|min:0',
+            // status_jaga dan urutan dihilangkan dari form
         ]);
+
+        $dataToUpdate = [
+            'name' => $validated['name'],
+            'jabatan' => $validated['jabatan'],
+        ];
 
         if ($request->hasFile('photo')) {
             if ($adminPst->photo_path) {
                 Storage::disk('public')->delete($adminPst->photo_path);
             }
-            $validated['photo_path'] = $request->file('photo')->store('admin_photos', 'public');
+            $dataToUpdate['photo_path'] = $request->file('photo')->store('admin_photos', 'public');
         }
 
-        $adminPst->update($validated);
+        $adminPst->update($dataToUpdate);
 
         return redirect()->route('admin.admin_pst.index')->with('success', 'Data Admin PST berhasil diperbarui.');
+    }
+
+    /**
+     * Mengubah status jaga Admin PST (toggle).
+     */
+    public function adminPstToggleStatus(AdminPst $adminPst)
+    {
+        $newStatus = $adminPst->status_jaga === 'Sedang Bertugas' ? 'Tidak Bertugas' : 'Sedang Bertugas';
+        
+        $adminPst->update(['status_jaga' => $newStatus]);
+
+        return redirect()->route('admin.admin_pst.index')->with('success', 'Status Admin PST berhasil diubah menjadi ' . $newStatus . '.');
     }
 
     /**
@@ -187,11 +207,7 @@ class AdminController extends Controller
      */
     public function adminPstDestroy(AdminPst $adminPst)
     {
-        if ($adminPst->photo_path) {
-            Storage::disk('public')->delete($adminPst->photo_path);
-        }
-        
-        $adminPst->delete();
+        $adminPst->delete(); 
 
         return redirect()->route('admin.admin_pst.index')->with('success', 'Data Admin PST berhasil dihapus.');
     }
@@ -222,8 +238,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|in:' . implode(',', Infographic::$typeOptions),
-            'status' => 'required|in:' . implode(',', Infographic::$statusOptions),
-            'urutan' => 'required|integer|min:0',
+            // status dan urutan dihilangkan dari form
             'photo' => 'nullable|required_if:type,Foto (Upload)|image|max:2048', 
             'video_url' => 'nullable|required_if:type,Video (URL Embed)|url',
         ]);
@@ -239,8 +254,9 @@ class AdminController extends Controller
         Infographic::create([
             'title' => $validated['title'],
             'type' => $validated['type'],
-            'status' => $validated['status'],
-            'urutan' => $validated['urutan'],
+            // Tambahkan nilai default untuk status dan urutan
+            'status' => 'Tidak Aktif', // Default status
+            'urutan' => Infographic::max('urutan') + 1, // Auto-increment urutan
             'content_url' => $contentUrl,
         ]);
 
@@ -248,50 +264,70 @@ class AdminController extends Controller
     }
 
     /**
-     * Memperbarui data Infografis.
+     * Memperbarui data Infografis (hanya judul, tipe, dan konten).
      */
     public function infographicsUpdate(Request $request, Infographic $infographic)
     {
-
         
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|in:' . implode(',', Infographic::$typeOptions),
-            'status' => 'required|in:' . implode(',', Infographic::$statusOptions),
-            'urutan' => 'required|integer|min:0',
+            // status dan urutan dihilangkan dari form
             'photo' => 'nullable|image|max:2048', 
             'video_url' => 'nullable|url',
         ]);
 
         $contentUrl = $infographic->content_url;
 
+        // Logika untuk menghapus file lama dan menyimpan file baru / memproses URL baru
         if ($validated['type'] === 'Foto (Upload)') {
             if ($request->hasFile('photo')) {
+                // Hapus foto lama jika ada
                 if ($infographic->isPhoto() && $infographic->content_url) {
                     Storage::disk('public')->delete($infographic->content_url);
                 }
                 $contentUrl = $request->file('photo')->store('infographics', 'public');
             }
+            // Jika tipe berubah dari Video ke Foto, dan tidak ada file baru
+            elseif (!$request->hasFile('photo') && !$infographic->isPhoto()) {
+                $contentUrl = null; 
+            }
         } 
         
         elseif ($validated['type'] === 'Video (URL Embed)') {
+            // Hapus file foto lama jika tipe berubah menjadi video
             if ($infographic->isPhoto() && $infographic->content_url) {
                 Storage::disk('public')->delete($infographic->content_url);
             }
             if (!empty($validated['video_url'])) {
                 $contentUrl = Infographic::convertToEmbedUrl($validated['video_url']);
             }
+            // Jika tipe berubah dari Foto ke Video, dan video_url kosong
+            elseif (empty($validated['video_url'])) {
+                $contentUrl = null;
+            }
         }
 
         $infographic->update([
             'title' => $validated['title'],
             'type' => $validated['type'],
-            'status' => $validated['status'],
-            'urutan' => $validated['urutan'],
+            // status dan urutan dipertahankan di nilai lama karena tidak diupdate di form
             'content_url' => $contentUrl,
         ]);
 
         return redirect()->route('admin.infographics.index')->with('success', 'Infografis berhasil diperbarui.');
+    }
+
+    /**
+     * Mengubah status Infografis (toggle).
+     */
+    public function infographicsToggleStatus(Infographic $infographic)
+    {
+        $newStatus = $infographic->status === 'Aktif' ? 'Tidak Aktif' : 'Aktif';
+        
+        $infographic->update(['status' => $newStatus]);
+
+        return redirect()->route('admin.infographics.index')->with('success', 'Status Infografis berhasil diubah menjadi ' . $newStatus . '.');
     }
 
     /**
@@ -332,9 +368,12 @@ class AdminController extends Controller
     {
         $validated = $request->validate([
             'content' => 'required|string',
-            'status' => 'required|in:' . implode(',', RunningText::$statusOptions),
-            'urutan' => 'required|integer|min:0',
+            // status dan urutan dihilangkan dari form
         ]);
+
+        // Tambahkan nilai default untuk status dan urutan
+        $validated['status'] = 'Tidak Aktif'; // Default status
+        $validated['urutan'] = RunningText::max('urutan') + 1; // Auto-increment urutan
 
         RunningText::create($validated);
 
@@ -342,19 +381,30 @@ class AdminController extends Controller
     }
 
     /**
-     * Memperbarui data Running Text.
+     * Memperbarui data Running Text (hanya konten).
      */
     public function runningTextUpdate(Request $request, RunningText $runningText)
     {
         $validated = $request->validate([
             'content' => 'required|string',
-            'status' => 'required|in:' . implode(',', RunningText::$statusOptions),
-            'urutan' => 'required|integer|min:0',
+            // status dan urutan dihilangkan dari form
         ]);
 
-        $runningText->update($validated);
+        $runningText->update(['content' => $validated['content']]);
 
         return redirect()->route('admin.running_texts.index')->with('success', 'Running Text berhasil diperbarui.');
+    }
+
+    /**
+     * Mengubah status Running Text (toggle).
+     */
+    public function runningTextToggleStatus(RunningText $runningText)
+    {
+        $newStatus = $runningText->status === 'Aktif' ? 'Tidak Aktif' : 'Aktif';
+        
+        $runningText->update(['status' => $newStatus]);
+
+        return redirect()->route('admin.running_texts.index')->with('success', 'Status Running Text berhasil diubah menjadi ' . $newStatus . '.');
     }
 
     /**

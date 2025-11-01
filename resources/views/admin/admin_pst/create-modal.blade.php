@@ -17,21 +17,10 @@
                         <input type="text" name="jabatan" id="jabatan" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="photo">Foto (Maks 2MB)</label>
-                        <input type="file" name="photo" id="photo" class="form-control" accept="image/*">
+                        <label for="photo">Foto (Maks 2MB, *wajib)</label>
+                        <input type="file" name="photo" id="photo" class="form-control" accept="image/*" required>
                     </div>
-                    <div class="form-group">
-                        <label for="status_jaga">Status Jaga</label>
-                        <select name="status_jaga" id="status_jaga" class="form-control" required>
-                            @foreach ($statusOptions as $status)
-                                <option value="{{ $status }}">{{ $status }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="urutan">Urutan Tampil (Angka)</label>
-                        <input type="number" name="urutan" id="urutan" class="form-control" value="0" min="0" required>
-                    </div>
+                    {{-- Status Jaga dan Urutan Tampil dihilangkan --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" onclick="hideModal('tambahAdminModal')">Tutup</button>

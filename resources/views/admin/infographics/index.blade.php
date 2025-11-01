@@ -18,9 +18,9 @@
                     <th>Judul</th>
                     <th>Tipe</th>
                     <th>Konten</th>
-                    <th style="width: 80px;">Status</th>
+                    {{-- Hapus kolom Status --}}
                     <th style="width: 80px;">Urutan</th>
-                    <th style="width: 100px;">Aksi</th>
+                    <th style="width: 150px;">Aksi</th> {{-- Lebarkan sedikit untuk 3 tombol --}}
                 </tr>
             </thead>
             <tbody>
@@ -36,17 +36,31 @@
                                 <a href="{{ $item->content_url }}" target="_blank">Lihat Video Embed</a>
                             @endif
                         </td>
-                        <td>
-                            <span style="font-weight: bold; color: {{ $item->status == 'Aktif' ? '#28a745' : '#dc3545' }}">
-                                {{ $item->status }}
-                            </span>
-                        </td>
+                        {{-- Hapus data Status --}}
                         <td>{{ $item->urutan }}</td>
-                        <td>
-                            <button class="btn btn-warning" style="padding: 5px 10px;" onclick="showModal('editInfografisModal{{ $item->id }}')">
+                        <td style="display: flex; gap: 5px; justify-content: center;">
+                            {{-- Tombol Toggle Status (Gunakan lebar tetap) --}}
+                            @php
+                                $isAktif = $item->status == 'Aktif';
+                                $newStatus = $isAktif ? 'Tidak Aktif' : 'Aktif';
+                            @endphp
+                            <form action="{{ route('admin.infographics.toggle_status', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengubah status menjadi: {{ $newStatus }}?');">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn {{ $isAktif ? 'btn-success' : 'btn-secondary' }}" 
+                                        style="padding: 5px 10px; font-size: 10px; width: 60px; {{ $isAktif ? '' : 'color: #333; border-color: #6c757d;' }}" {{-- BARU: Menambahkan warna teks gelap dan border untuk kontras --}}
+                                        title="Status: {{ $item->status }}">
+                                    {{ $isAktif ? 'Aktif' : 'Nonaktif' }}
+                                </button>
+                            </form>
+
+                            {{-- Tombol Edit Judul/Konten (Ikon Saja) --}}
+                            <button class="btn btn-info" style="padding: 5px 10px; width: 40px;" onclick="showModal('editInfografisModal{{ $item->id }}')" title="Edit Data">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
-                            <button class="btn btn-danger" style="padding: 5px 10px;" onclick="confirmDelete('delete-infographic-form-{{ $item->id }}')">
+                            
+                            {{-- Tombol Hapus (Ikon Saja) --}}
+                            <button class="btn btn-danger" style="padding: 5px 10px; width: 40px;" onclick="confirmDelete('delete-infographic-form-{{ $item->id }}')" title="Hapus">
                                 <i class="fas fa-trash"></i>
                             </button>
                             
@@ -61,7 +75,7 @@
                     @include('admin.infographics.edit-modal', ['item' => $item])
                 @empty
                     <tr>
-                        <td colspan="7" style="text-align: center;">Belum ada data infografis.</td>
+                        <td colspan="6" style="text-align: center;">Belum ada data infografis.</td>
                     </tr>
                 @endforelse
             </tbody>

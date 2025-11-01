@@ -25,21 +25,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-photo-{{ $admin->id }}">Ganti Foto (Maks 2MB)</label>
+                        <label for="edit-photo-{{ $admin->id }}">Ganti Foto (Maks 2MB, biarkan kosong jika tidak diganti)</label>
                         <input type="file" name="photo" id="edit-photo-{{ $admin->id }}" class="form-control" accept="image/*">
                     </div>
-                    <div class="form-group">
-                        <label for="edit-status_jaga-{{ $admin->id }}">Status Jaga</label>
-                        <select name="status_jaga" id="edit-status_jaga-{{ $admin->id }}" class="form-control" required>
-                            @foreach ($statusOptions as $status)
-                                <option value="{{ $status }}" @if($admin->status_jaga == $status) selected @endif>{{ $status }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-urutan-{{ $admin->id }}">Urutan Tampil (Angka)</label>
-                        <input type="number" name="urutan" id="edit-urutan-{{ $admin->id }}" class="form-control" value="{{ $admin->urutan }}" min="0" required>
-                    </div>
+                    {{-- Status Jaga dan Urutan Tampil dihilangkan --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" onclick="hideModal('editAdminModal{{ $admin->id }}')">Tutup</button>
