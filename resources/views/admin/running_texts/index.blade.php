@@ -5,7 +5,7 @@
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3 style="margin: 0;">Manajemen Running Text</h3>
-        <button class="btn btn-primary" onclick="showModal('tambahRunningTextModal')">
+        <button class="btn btn-export" onclick="showModal('tambahRunningTextModal')">
             <i class="fas fa-plus"></i> Add
         </button>
     </div>
@@ -37,15 +37,15 @@
                             <form action="{{ route('admin.running_texts.toggle_status', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengubah status menjadi: {{ $newStatus }}?');">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="btn {{ $isAktif ? 'btn-success' : 'btn-secondary' }}" 
-                                        style="padding: 5px 10px; font-size: 10px; width: 60px; {{ $isAktif ? '' : 'color: #333; border-color: #6c757d;' }}" {{-- BARU: Menambahkan warna teks gelap dan border untuk kontras --}}
+                                <button type="submit" class="btn {{ $isAktif ? 'btn-export' : 'btn-warning' }}" 
+                                        style="padding: 5px 10px; font-size: 10px; width: 60px; {{ $isAktif ? '' : 'color: #000000ff; border-color: #ffffffff;' }}" {{-- BARU: Menambahkan warna teks gelap dan border untuk kontras --}}
                                         title="Status: {{ $item->status }}">
                                     {{ $isAktif ? 'Aktif' : 'Nonaktif' }}
                                 </button>
                             </form>
                             
                             {{-- Tombol Edit Konten (Ikon Saja) --}}
-                            <button class="btn btn-info" style="padding: 5px 10px; width: 40px;" onclick="showModal('editRunningTextModal{{ $item->id }}')" title="Edit Data">
+                            <button class="btn btn-warning" style="padding: 5px 10px; width: 40px;" onclick="showModal('editRunningTextModal{{ $item->id }}')" title="Edit Data">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
 

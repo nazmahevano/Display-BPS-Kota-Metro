@@ -38,7 +38,7 @@
 
 
         {{-- Ekspor dan Hapus (Simulasi tombol) --}}
-        <button class="btn btn-light" style="margin-left: 10px;" onclick="redirectToExport()">
+        <button class="btn btn-export" style="margin-left: 10px;" onclick="redirectToExport()">
             <i class="fas fa-file-export"></i> Export
         </button>
 

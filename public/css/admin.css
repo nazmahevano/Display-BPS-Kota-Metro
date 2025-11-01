@@ -4,16 +4,20 @@
 /* Dashboard Layout & Reset */
 /* ==================================== */
 :root {
-    --bps-blue: #1C3B6F;
-    --bps-orange: #f26522;
-    --primary: var(--bps-blue);
+    /* GANTI WARNA UTAMA SESUAI PALET BARU */
+    --color-primary: #75b547; /* Hijau Primary */
+    --color-secondary: #2d95c8; /* Biru Secondary */
+    --color-accent: #e08939; /* Oranye Aksen */
+    --color-light-blue: #79bada; /* Biru Muda untuk Border */
+
+    --primary: var(--color-primary);
     --sidebar-width: 250px;
     --sidebar-collapsed-width: 60px;
     --bg-light: #f8f9fa;
     --bg-white: #ffffff;
     --text-dark: #343a40;
     --text-muted: #6c757d;
-    --border-color: #dee2e6;
+    --border-color: var(--color-light-blue); /* KUNCI: Garis Border sekarang menggunakan Biru Muda */
     --success-bg: #d4edda;
     --success-text: #155724;
     --danger-bg: #f8d7da;
@@ -41,7 +45,7 @@ body {
 .sidebar {
     width: var(--sidebar-width);
     flex-shrink: 0;
-    background-color: #212529;
+    background-color: #1c5d9a;
     color: var(--bg-white);
     padding: 0;
     position: sticky;
@@ -58,20 +62,20 @@ body {
     padding: 15px 20px; /* Padding yang lebih seimbang */
     font-size: 1.3em;
     font-weight: bold;
-    color: var(--bps-orange);
+    color: #fefefe;
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Garis pemisah yang lebih halus */
     margin-bottom: 10px;
     position: sticky; /* Sticky agar selalu terlihat saat scroll */
     top: 0;
-    background-color: #212529; /* Samakan dengan sidebar background */
+    background-color: #1c5d9a; /* Samakan dengan sidebar background */
     z-index: 10;
 }
 
 .sidebar-title {
     font-size: 1em;
     font-weight: 700; /* Tebalkan sedikit */
-    color: var(--bps-orange);
+    color: #fefefe;
     transition: opacity 0.3s;
     white-space: nowrap;
     overflow: hidden;
@@ -82,7 +86,7 @@ body {
 .toggle-btn {
     background: none;
     border: none;
-    color: var(--bps-orange); /* Gunakan warna BPS Orange agar kontras */
+    color: #fefefe; /* Gunakan warna BPS Orange agar kontras */
     cursor: pointer;
     font-size: 1.5em; /* Ukuran yang lebih besar */
     padding: 5px;
@@ -115,10 +119,11 @@ body {
 .menu-text {
     opacity: 1;
     transition: opacity 0.3s;
+    color: #fefefe
 }
 
 .menu-group-title {
-    color: var(--text-muted);
+    color: #fefefe;
     font-size: 0.75em;
     padding: 10px 20px 5px;
     text-transform: uppercase;
@@ -396,8 +401,8 @@ body {
 
 .btn-primary {
     color: var(--bg-white);
-    background-color: var(--primary);
-    border-color: var(--primary);
+    background-color: #79bada;
+    border-color: #79bada;
 }
 
 .btn-primary:hover {
@@ -407,13 +412,13 @@ body {
 
 .btn-success {
     color: var(--bg-white);
-    background-color: #28a745;
-    border-color: #28a745;
+    background-color: #2d95c8;
+    border-color: #2d95c8;
 }
 
 .btn-success:hover {
-    background-color: #1e7e34;
-    border-color: #1c7430;
+    background-color: #003d7c;
+    border-color: #003d7c;
 }
 
 .btn-info {
@@ -433,13 +438,33 @@ body {
     border-color: #dc3545;
 }
 
+.btn-export {
+    color: var(--bg-white);
+    background-color: #28a745;
+}
+
+.btn-export:hover {
+    background-color: #1e7e34;
+}
+
 .btn-danger:hover {
-    background-color: #c82333;
+    background-color: #bd2130;
     border-color: #bd2130;
 }
 
-.btn-warning {
+.btn-nonaktif{
     color: var(--text-dark);
+    background-color: #eab381;
+    border-color: #eab381;
+}
+
+.btn-nonaktif:hover {
+    background-color: #e08939;
+    border-color: #e08939;
+}
+
+.btn-warning {
+    color: var(--text-light);
     background-color: #ffc107;
     border-color: #ffc107;
 }

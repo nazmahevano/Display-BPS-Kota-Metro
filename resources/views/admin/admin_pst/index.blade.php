@@ -5,7 +5,7 @@
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3 style="margin: 0;">Manajemen Petugas PST</h3>
-        <button class="btn btn-primary" onclick="showModal('tambahAdminModal')">
+        <button class="btn btn-export" onclick="showModal('tambahAdminModal')">
             <i class="fas fa-plus"></i> Add
         </button>
     </div>
@@ -42,15 +42,15 @@
                             <form action="{{ route('admin.admin_pst.toggle_status', $admin->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengubah status menjadi: {{ $newStatus }}?');" style="flex-grow: 1;">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="btn {{ $isBertugas ? 'btn-success' : 'btn-secondary' }}" 
-                                        style="padding: 5px 10px; font-size: 10px; width: 60px; {{ $isBertugas ? '' : 'color: #333; border-color: #6c757d;' }}" {{-- BARU: Menambahkan warna teks gelap dan border untuk kontras --}}
+                                <button type="submit" class="btn {{ $isBertugas ? 'btn-export' : 'btn-warning' }}" 
+                                        style="padding: 5px 10px; font-size: 10px; width: 60px; {{ $isBertugas ? '' : 'color: #000000ff; border-color: #ffffffff;' }}" {{-- BARU: Menambahkan warna teks gelap dan border untuk kontras --}}
                                         title="Status Jaga: {{ $admin->status_jaga }}">
                                     {{ $isBertugas ? 'Aktif' : 'Nonaktif' }}
                                 </button>
                             </form>
                             
                             {{-- Tombol Edit Nama/Foto (Modal) --}}
-                            <button class="btn btn-info" style="padding: 5px 10px; min-width: 40px;" onclick="showModal('editAdminModal{{ $admin->id }}')" title="Edit Data">
+                            <button class="btn btn-warning" style="padding: 5px 10px; min-width: 40px;" onclick="showModal('editAdminModal{{ $admin->id }}')" title="Edit Data">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
 
